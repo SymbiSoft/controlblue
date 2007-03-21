@@ -14,7 +14,10 @@ class BlueToothError(Exception):
 class Computer:
   def __init__(self):
     self.address = None
-    self.discover()
+    try:
+      self.discover()
+    except BlueToothError:
+      pass
 
   def discover(self):
     try:
@@ -139,10 +142,7 @@ def exit_key_handler():
   mycommands.write()
   app_lock.signal()
 
-try:
-  mycomputer = Computer()
-except BlueToothError:
-  pass
+mycomputer = Computer()
 mycommands = commandList()
 
 MENU_LIST = [(u'New', mycommands.newCmd), (u'Edit', mycommands.editCmd), (u'Delete', mycommands.remCmd), (u'Connection', ((u'Reconnect', mycomputer.discover), (u'Authenticate', mycomputer.auth)))]

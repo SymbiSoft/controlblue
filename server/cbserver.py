@@ -1,4 +1,5 @@
 from lightblue import *
+import bluetooth
 import os
 
 trusted = []
