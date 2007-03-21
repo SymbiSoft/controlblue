@@ -30,12 +30,10 @@ class Computer:
       self.portno = services[unicode(SERVICE_NAME)]
       self.auth() or appuifw.note(u'Authentication failed!', 'error')
     else:
-      appuifw.note(u'shit')
       self.address = None
       raise BlueToothError(SERVICE_NAME + u' is not running on selected device')
 
   def auth(self):
-    appuifw.note(u'noshit')
     if (not self.address):
       appuifw.note (u'Not connected!', 'error')
       return False
