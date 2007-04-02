@@ -129,7 +129,6 @@ class commandList:
       self.commands = {}
       self.initKeys()
     self.lb = appuifw.Listbox(self.commandNames, self.callback)
-    print self.keys
   
   def write(self):
     if (self.isEmpty):
@@ -144,11 +143,6 @@ class commandList:
       appuifw.note(u"Unable to write to file", "error")
     f.close()
 
-  def callback(self):
-    if (self.isEmpty):
-      return
-    key = self.commandNames[self.lb.current()]
-    mycomputer and mycomputer.sendCommand(self.commands[key])
 
 #figure out how user can cancel form
   def run_form(self, name = '', cmd = '', hotkey = 0, pos = 0):
@@ -182,6 +176,7 @@ class commandList:
       self.commandNames = []
       self.commands = {}
       self.isEmpty = False
+    
     self.commandNames.insert(pos, newname)
     self.commands[newname] = newcmd
     if (newhotkey != -1):
@@ -231,12 +226,27 @@ class commandList:
 
     self.rem_aux(i)
     self.run_form(name, cmd, hotkey, i)
+  
+  def update_list(self, name):
+    i = self.commandNames.index(name)
+    if (i == 0):
+      return
+    tmp = self.commandNames[i]
+    self.commandNames[i] = self.commandNames[i-1]
+    self.commandNames[i-1] = tmp
+    self.lb.set_list(self.commandNames, i-1)
 
+  def callback(self):
+    if (self.isEmpty):
+      return
+    name = self.commandNames[self.lb.current()]
+    mycomputer and mycomputer.sendCommand(self.commands[name])
+    self.update_list(name)
+  
   def handle_key(self, i):
-    print "test"
-    print i
     if (self.keys[i] != None):
-      mycomputer.sendCommand(self.commands[self.keys[i]])
+      mycomputer and mycomputer.sendCommand(self.commands[self.keys[i]])
+      self.update_list(self.keys[i])
 
   def bind_keys(self):
     for i in range(10):
